@@ -1,0 +1,20 @@
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDB7I0nE7I9KQcZv9ZBQndBldgxwzW8STc",
+  authDomain: "tech-challenge-fiap-77d29.firebaseapp.com",
+  projectId: "tech-challenge-fiap-77d29",
+  storageBucket: "tech-challenge-fiap-77d29.firebasestorage.app",
+  messagingSenderId: "533590741058",
+  appId: "1:533590741058:web:0261b1949de46e32999ddb"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// Exportamos apenas o que vamos usar nos Contextos
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
