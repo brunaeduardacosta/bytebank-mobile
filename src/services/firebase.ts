@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIza...",
+  apiKey: "AIzaSyDB7I0nE7I9KQcZv9ZBQndBldgxwzW8STc",
   authDomain: "tech-challenge-fiap-77d29.firebaseapp.com",
   projectId: "tech-challenge-fiap-77d29",
   storageBucket: "tech-challenge-fiap-77d29.firebasestorage.app",
