@@ -29,6 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
           onPress: async () => {
             try {
               await signOut(auth);
+              // O listener onAuthStateChanged nas suas Routes cuidará do redirecionamento
             } catch (error) {
               console.error("Erro ao sair:", error);
               Alert.alert("Erro", "Não foi possível sair agora.");
@@ -42,6 +43,8 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
   return (
     <View style={[navStyles.topbar, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
       <View style={navStyles.topbarInner}>
+        
+        {/* Lado Esquerdo: Logo */}
         <View style={navStyles.leftSection}>
           <View style={[navStyles.logoBadge, { backgroundColor: theme.accent }]}>
             <Text style={navStyles.logoBadgeText}>B</Text>
@@ -51,23 +54,28 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
           </Text>
         </View>
 
+        {/* Lado Direito: Ações */}
         <View style={navStyles.rightSection}>
-          <TouchableOpacity style={navStyles.iconBtn}>
-            <Ionicons name="search-outline" size={22} color={theme.subText} />
+          
+          {/* BOTÃO DE SAIR (Substituído o de pesquisa) */}
+          <TouchableOpacity 
+            style={navStyles.iconBtn} 
+            onPress={handleLogout}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="log-out-outline" size={24} color="#EF4444" /> 
           </TouchableOpacity>
 
+          {/* Notificações */}
           <TouchableOpacity style={navStyles.iconBtn}>
             <Ionicons name="notifications-outline" size={22} color={theme.subText} />
             <View style={navStyles.notifDot} />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={handleLogout}
-            activeOpacity={0.7}
-            style={[navStyles.userAvatar, { backgroundColor: theme.accent }]}
-          >
+          {/* Avatar do Usuário */}
+          <View style={[navStyles.userAvatar, { backgroundColor: theme.accent }]}>
             <Text style={navStyles.avatarText}>BS</Text>
-          </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
@@ -76,13 +84,19 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
 
 const navStyles = StyleSheet.create({
   topbar: {
-    width: '100%',
+    // Importante para ficar fixo no topo
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    // Altura dinâmica conforme o sistema
     height: Platform.OS === 'ios' ? 110 : 90,
     borderBottomWidth: 1,
     paddingTop: Platform.OS === 'ios' ? 45 : 25,
     justifyContent: 'center',
-    zIndex: 999, // Garante que fique acima de tudo no iOS
-    elevation: 5, // Garante que fique acima no Android
+    // Z-index alto para não ser coberto pelo conteúdo do ScrollView
+    zIndex: 1000, 
+    elevation: 10, 
   },
   topbarInner: {
     flexDirection: 'row',
@@ -95,8 +109,18 @@ const navStyles = StyleSheet.create({
   logoBadgeText: { color: '#FFF', fontWeight: '900', fontSize: 16 },
   logoText: { fontSize: 20, fontWeight: '800' },
   rightSection: { flexDirection: 'row', alignItems: 'center' },
-  iconBtn: { padding: 8 },
-  notifDot: { position: 'absolute', top: 8, right: 8, width: 8, height: 8, backgroundColor: '#EF4444', borderRadius: 4, borderWidth: 1.5, borderColor: '#FFF' },
+  iconBtn: { padding: 8, marginLeft: 4 },
+  notifDot: { 
+    position: 'absolute', 
+    top: 8, 
+    right: 8, 
+    width: 8, 
+    height: 8, 
+    backgroundColor: '#EF4444', 
+    borderRadius: 4, 
+    borderWidth: 1.5, 
+    borderColor: '#FFF' 
+  },
   userAvatar: { width: 36, height: 36, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginLeft: 8 },
   avatarText: { color: '#FFF', fontWeight: 'bold', fontSize: 13 },
 });

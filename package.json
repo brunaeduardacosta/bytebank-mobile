@@ -19,6 +19,7 @@
     "axios": "^1.13.5",
     "babel-preset-expo": "~54.0.10",
     "expo": "~54.0.33",
+    "expo-clipboard": "~8.0.8",
     "expo-image-picker": "~17.0.10",
     "expo-status-bar": "~3.0.9",
     "firebase": "^12.9.0",

@@ -36,7 +36,7 @@ const Themes = {
   }
 };
 
-export default function MobileDashboardScreen() {
+export default function MobileDashboardScreen({ navigation }: any) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showValue, setShowValue] = useState(true);
   const theme = isDarkMode ? Themes.dark : Themes.light;
@@ -57,7 +57,6 @@ export default function MobileDashboardScreen() {
     outputRange: ["0%", "100%"],
   });
 
-  // Definimos a altura da Navbar para compensar no ScrollView
   const NAVBAR_HEIGHT = Platform.OS === 'ios' ? 110 : 90;
 
   return (
@@ -68,13 +67,12 @@ export default function MobileDashboardScreen() {
         translucent 
       />
       
-      {/* 1. NAVBAR FIXA NO TOPO - Renderizada por último no JSX para garantir clique */}
+      {/* 1. NAVBAR FIXA */}
       <Navbar theme={theme} />
 
       {/* 2. CONTEÚDO SCROLLÁVEL */}
       <ScrollView 
         showsVerticalScrollIndicator={false} 
-        // O segredo está aqui: paddingTop empurra o conteúdo para baixo da Navbar
         contentContainerStyle={[
           styles.scrollContent, 
           { paddingTop: NAVBAR_HEIGHT + 10 } 
@@ -98,17 +96,36 @@ export default function MobileDashboardScreen() {
         </View>
 
         {/* CARD DE SALDO TOTAL */}
-        <View style={[styles.balanceCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <TouchableOpacity 
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate('ResumoFinanceiro')}
+          style={[styles.balanceCard, { backgroundColor: theme.card, borderColor: theme.border }]}
+        >
           <View style={styles.rowBetween}>
             <Text style={[styles.balanceLabel, { color: theme.subText }]}>Saldo total</Text>
-            <TouchableOpacity onPress={() => setShowValue(!showValue)} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-              <Ionicons name={showValue ? "eye-outline" : "eye-off-outline"} size={22} color={theme.subText} />
-            </TouchableOpacity>
+            
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity 
+                onPress={() => setShowValue(!showValue)} 
+                hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
+                style={{ marginRight: 15 }}
+              >
+                <Ionicons name={showValue ? "eye-outline" : "eye-off-outline"} size={22} color={theme.subText} />
+              </TouchableOpacity>
+              <Ionicons name="chevron-forward" size={20} color={theme.accent} />
+            </View>
           </View>
+
           <Text style={[styles.balanceValue, { color: theme.text }]}>
             {showValue ? "R$ 12.450,00" : "••••••"}
           </Text>
-        </View>
+
+          <View style={{ marginTop: 8 }}>
+             <Text style={[styles.smallText, { color: theme.accent, fontWeight: '700' }]}>
+               Ver resumo detalhado
+             </Text>
+          </View>
+        </TouchableOpacity>
 
         {/* METAS FINANCEIRAS */}
         <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
@@ -127,10 +144,11 @@ export default function MobileDashboardScreen() {
 
         {/* BOTÕES DE AÇÃO RÁPIDA */}
         <View style={styles.quickActionsContainer}>
-          <QuickAction icon="rocket-outline" label="Investir" theme={theme} />
-          <QuickAction icon="qr-code-outline" label="Pix" theme={theme} />
-          <QuickAction icon="shield-checkmark-outline" label="Seguros" theme={theme} />
-          <QuickAction icon="gift-outline" label="Mimos" theme={theme} />
+          <QuickAction icon="rocket-outline" label="Investir" theme={theme} onPress={() => {}} />
+          <QuickAction icon="cash-outline"label="Emprestimo" theme={theme} onPress={() => navigation.navigate('Emprestimo')} />
+          <QuickAction icon="swap-horizontal-outline" label="Transferir e Pix" theme={theme} onPress={() => navigation.navigate('Transferencia')} />
+          <QuickAction icon="shield-checkmark-outline" label="Seguros" theme={theme} onPress={() => {}} />
+          <QuickAction icon="gift-outline" label="Mimos" theme={theme} onPress={() => {}} />
         </View>
 
         {/* CARD DE CARTÃO DE CRÉDITO */}
@@ -151,33 +169,27 @@ export default function MobileDashboardScreen() {
         </TouchableOpacity>
 
         {/* CARD DE EMPRÉSTIMOS */}
-        <TouchableOpacity style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]} activeOpacity={0.8}>
-          <View style={styles.rowBetween}>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.cardTitle, { color: theme.text }]}>Empréstimos</Text>
-              <Text style={[styles.smallText, { color: theme.subText, marginTop: 4 }]}>Crédito disponível para você:</Text>
-              <Text style={[styles.bigValue, { color: theme.accent, fontSize: 20, marginTop: 8 }]}>R$ 25.000,00</Text>
-            </View>
-            <Ionicons name="cash-outline" size={24} color={theme.subText} />
-          </View>
-        </TouchableOpacity>
-
-        {/* CARD INDIQUE AMIGOS */}
-        <TouchableOpacity 
-          style={[styles.card, { 
-            backgroundColor: isDarkMode ? theme.tab : "#E8F5E9", 
-            borderColor: theme.accent,
-            borderStyle: 'dashed' 
-          }]}
+<TouchableOpacity 
+          style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]} 
           activeOpacity={0.8}
+          // ADICIONADO: Navegação ao clicar no card inteiro
+          onPress={() => navigation.navigate('Emprestimo')}
         >
           <View style={styles.rowBetween}>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.cardTitle, { color: theme.text }]}>Indique amigos</Text>
-              <Text style={[styles.smallText, { color: theme.text, marginTop: 4 }]}>Ganhe até R$ 50 por indicação!</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={[styles.cardTitle, { color: theme.text }]}>Empréstimos</Text>
+                <Ionicons name="chevron-forward" size={16} color={theme.accent} style={{ marginLeft: 4 }} />
+              </View>
+              <Text style={[styles.smallText, { color: theme.subText, marginTop: 4 }]}>
+                Crédito disponível para você:
+              </Text>
+              <Text style={[styles.bigValue, { color: theme.accent, fontSize: 20, marginTop: 8 }]}>
+                R$ 25.000,00
+              </Text>
             </View>
-            <View style={[styles.iconCircle, { backgroundColor: theme.accent, marginBottom: 0, width: 40, height: 40 }]}>
-              <Ionicons name="gift" size={20} color="#FFF" />
+            <View style={{ alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}>
+               <Ionicons name="chevron-forward" size={24} color={theme.subText} />
             </View>
           </View>
         </TouchableOpacity>
@@ -187,13 +199,21 @@ export default function MobileDashboardScreen() {
   );
 }
 
-function QuickAction({ icon, label, theme }) {
+/**
+ * COMPONENTE QUICK ACTION
+ * Corrigido para TypeScript aceitar onPress
+ */
+function QuickAction({ icon, label, theme, onPress }: any) {
   return (
     <View style={styles.actionItem}>
-      <TouchableOpacity style={[styles.iconCircle, { backgroundColor: theme.tab }]} activeOpacity={0.6}>
+      <TouchableOpacity 
+        style={[styles.iconCircle, { backgroundColor: theme.tab }]} 
+        activeOpacity={0.6}
+        onPress={onPress}
+      >
         <Ionicons name={icon} size={24} color={theme.accent} />
       </TouchableOpacity>
-      <Text style={[styles.actionText, { color: theme.text }]}>{label}</Text>
+      <Text style={[styles.actionText, { color: theme.text }]} numberOfLines={1}>{label}</Text>
     </View>
   );
 }
@@ -214,10 +234,22 @@ const styles = StyleSheet.create({
   progressTrack: { height: 10, borderRadius: 5, marginVertical: 14, overflow: 'hidden' },
   progressFill: { height: '100%', borderRadius: 5 },
   percentageText: { fontWeight: 'bold', fontSize: 14 },
-  quickActionsContainer: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 15, marginBottom: 10 },
-  actionItem: { alignItems: 'center' },
-  iconCircle: { width: 58, height: 58, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
-  actionText: { fontSize: 12, fontWeight: '700' },
+  
+  // Ajuste para 5 botões
+  quickActionsContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    paddingHorizontal: 15, 
+    paddingVertical: 15, 
+    marginBottom: 10 
+  },
+  actionItem: { 
+    alignItems: 'center',
+    width: (screenWidth - 30) / 5.2, // Ajuste dinâmico de largura
+  },
+  iconCircle: { width: 54, height: 54, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
+  actionText: { fontSize: 10, fontWeight: '700', textAlign: 'center' },
+  
   smallText: { fontSize: 12, fontWeight: '500' },
   bigValue: { fontSize: 24, fontWeight: "800", marginTop: 4 },
   payBtn: { paddingHorizontal: 22, paddingVertical: 12, borderRadius: 14 },
